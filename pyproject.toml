@@ -1,0 +1,9 @@
+[project]
+name = "pcap-analyzer"
+version = "0.1.0"
+description = "Automatic pcap files analyzer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "scapy>=2.6.1",
+]
