@@ -4,6 +4,7 @@ from scapy.all import rdpcap, Raw
 from collections import Counter
 import re
 from .decode_pkts import decode_base64, decode_rot13, decode_hex
+from .stream_reassembly import StreamAnalyzer
 
 class PcapAnalyzer:
     def __init__(self, pcap_file):
@@ -82,4 +83,9 @@ class PcapAnalyzer:
         stats = {}
         stats['layers'] = self.analyze_layers()
         stats['flags'] = self.search_flags()
+        
+        # Stream Analysis
+        stream_analyzer = StreamAnalyzer(self.packets)
+        stats['stream_flags'] = stream_analyzer.search_streams()
+        
         return stats

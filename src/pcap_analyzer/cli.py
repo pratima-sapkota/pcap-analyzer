@@ -26,10 +26,17 @@ def main():
         
         flags = stats.get('flags', [])
         if flags:
-            print("\n[+] Possible Flags Found:")
+            print("\n[+] Possible Flags Found (Single Packet):")
             for item in flags:
                 print(f"  Packet {item['packet_num']}: {item['match']} (Encoding: {item.get('encoding', 'unknown')})")
-        else:
+        
+        stream_flags = stats.get('stream_flags', [])
+        if stream_flags:
+            print("\n[+] Possible Flags Found (reassembled streams):")
+            for item in stream_flags:
+                print(f"  Stream {item['stream_id']}: {item['match']} (Encoding: {item.get('encoding', 'unknown')})")
+        
+        if not flags and not stream_flags:
             print("\n[-] No flags found with patterns:", patterns)
             
     except FileNotFoundError:
