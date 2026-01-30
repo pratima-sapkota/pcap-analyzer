@@ -8,6 +8,11 @@ dependencies = [
     "scapy>=2.6.1",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+
 [project.scripts]
 pcap-analyzer = "pcap_analyzer.cli:main"
 
