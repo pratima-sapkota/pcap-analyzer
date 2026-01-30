@@ -34,13 +34,47 @@ uv sync
 
 ## Usage
 
-### Command Line Interface
+### Analyzing Any Pcap File
+
+You can analyze pcap files from **anywhere on your filesystem**:
 
 ```bash
-# Basic usage
-uv run pcap-analyzer path/to/capture.pcap
+# Analyze a file with absolute path
+uv run pcap-analyzer /path/to/your/capture.pcap
 
-# Or run directly with Python
+# Analyze a file with relative path
+uv run pcap-analyzer ./downloads/network_dump.pcapng
+
+# Analyze a file in the data directory
+uv run pcap-analyzer data/trace.pcap
+```
+
+### Using Custom Flag Patterns
+
+Search for custom patterns using the `-p` flag (supports regex):
+
+```bash
+# Single custom pattern
+uv run pcap-analyzer capture.pcap -p "secret{.*?}"
+
+# Multiple patterns
+uv run pcap-analyzer capture.pcap -p "KEY_[A-Z0-9]+" -p "token:[a-f0-9]{32}"
+```
+
+### TLS Decryption
+
+For encrypted HTTPS traffic, place the RSA private key alongside the pcap file:
+
+```bash
+# Auto-detects matching key file (webnet0.pcap → webnet0.key)
+uv run pcap-analyzer data/webnet0.pcap
+
+# Files must be named: <name>.pcap and <name>.key in the same directory
+```
+
+### Alternative: Run as Python Module
+
+```bash
 uv run python -m pcap_analyzer.cli path/to/capture.pcap
 ```
 
@@ -69,16 +103,6 @@ Analyzing data/trace.pcap...
 
 [+] Extracted Files:
   flag.png (Size: 1234 bytes) -> extracted_files/flag.png
-```
-
-### TLS Decryption
-
-For encrypted HTTPS traffic, provide the server's RSA private key:
-
-```bash
-# The tool auto-detects .key files with matching names
-# e.g., webnet0.pcap will use webnet0.key if present in the same directory
-uv run pcap-analyzer data/webnet0.pcap
 ```
 
 ## Data File Organization
