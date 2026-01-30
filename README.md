@@ -1,4 +1,4 @@
-# pcap-analyzer
+# pcap-inspector
 
 Automatic pcap/pcapng file analyzer designed for CTF (Capture The Flag) challenges. This tool automates the process of extracting and detecting flags from network traffic captures.
 
@@ -25,8 +25,8 @@ Automatic pcap/pcapng file analyzer designed for CTF (Capture The Flag) challeng
 
 ```bash
 # Clone the repository
-git clone https://github.com/pratima-sapkota/pcap-analyzer.git
-cd pcap-analyzer
+git clone https://github.com/pratima-sapkota/pcap-inspector.git
+cd pcap-inspector
 
 # Install dependencies (creates venv automatically)
 uv sync
@@ -40,13 +40,13 @@ You can analyze pcap files from **anywhere on your filesystem**:
 
 ```bash
 # Analyze a file with absolute path
-uv run pcap-analyzer /path/to/your/capture.pcap
+uv run pcap-inspector /path/to/your/capture.pcap
 
 # Analyze a file with relative path
-uv run pcap-analyzer ./downloads/network_dump.pcapng
+uv run pcap-inspector ./downloads/network_dump.pcapng
 
 # Analyze a file in the data directory
-uv run pcap-analyzer data/trace.pcap
+uv run pcap-inspector data/trace.pcap
 ```
 
 ### Using Custom Flag Patterns
@@ -55,10 +55,10 @@ Search for custom patterns using the `-p` flag (supports regex):
 
 ```bash
 # Single custom pattern
-uv run pcap-analyzer capture.pcap -p "secret{.*?}"
+uv run pcap-inspector capture.pcap -p "secret{.*?}"
 
 # Multiple patterns
-uv run pcap-analyzer capture.pcap -p "KEY_[A-Z0-9]+" -p "token:[a-f0-9]{32}"
+uv run pcap-inspector capture.pcap -p "KEY_[A-Z0-9]+" -p "token:[a-f0-9]{32}"
 ```
 
 ### TLS Decryption
@@ -67,7 +67,7 @@ For encrypted HTTPS traffic, place the RSA private key alongside the pcap file:
 
 ```bash
 # Auto-detects matching key file (webnet0.pcap → webnet0.key)
-uv run pcap-analyzer data/webnet0.pcap
+uv run pcap-inspector data/webnet0.pcap
 
 # Files must be named: <name>.pcap and <name>.key in the same directory
 ```
@@ -75,7 +75,7 @@ uv run pcap-analyzer data/webnet0.pcap
 ### Alternative: Run as Python Module
 
 ```bash
-uv run python -m pcap_analyzer.cli path/to/capture.pcap
+uv run python -m pcap_inspector.cli path/to/capture.pcap
 ```
 
 ### Example Output
@@ -110,7 +110,7 @@ Analyzing data/trace.pcap...
 Place your pcap files in the `data/` directory for easy access:
 
 ```
-pcap-analyzer/
+pcap-inspector/
 ├── data/
 │   ├── capture.pcap          # Your pcap files
 │   ├── capture.pcapng        # Also supports pcapng format
@@ -119,7 +119,7 @@ pcap-analyzer/
 │   └── ...
 ├── extracted_files/          # Auto-created for extracted files
 ├── src/
-│   └── pcap_analyzer/
+│   └── pcap_inspector/
 └── tests/
 ```
 
@@ -152,11 +152,11 @@ The sample scanner will:
 ## Project Structure
 
 ```
-pcap-analyzer/
-├── src/pcap_analyzer/
+pcap-inspector/
+├── src/pcap_inspector/
 │   ├── __init__.py
 │   ├── cli.py              # Command line interface
-│   ├── pcap_stats.py       # Main analyzer class (PcapAnalyzer)
+│   ├── pcap_stats.py       # Main analyzer class (PcapInspector)
 │   ├── stream_reassembly.py # TCP stream reconstruction (StreamAnalyzer)
 │   ├── file_extractor.py   # HTTP file extraction (FileExtractor)
 │   └── decode_pkts.py      # Encoding/decoding utilities
@@ -174,17 +174,17 @@ pcap-analyzer/
 
 ## API Usage
 
-You can also use pcap-analyzer as a library:
+You can also use pcap-inspector as a library:
 
 ```python
-from pcap_analyzer.pcap_stats import PcapAnalyzer
+from pcap_inspector.pcap_stats import PcapInspector
 
 # Basic analysis
-analyzer = PcapAnalyzer("capture.pcap")
+analyzer = PcapInspector("capture.pcap")
 stats = analyzer.read_stats()
 
 # With TLS decryption
-analyzer = PcapAnalyzer("encrypted.pcap", key_file="server.key")
+analyzer = PcapInspector("encrypted.pcap", key_file="server.key")
 stats = analyzer.read_stats()
 
 # Access results

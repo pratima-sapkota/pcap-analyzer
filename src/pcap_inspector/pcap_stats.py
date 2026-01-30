@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PCAP file analyzer for CTF flag detection and file extraction.
 
-This module provides the main PcapAnalyzer class for analyzing packet
+This module provides the main PcapInspector class for analyzing packet
 capture files, searching for hidden flags, and extracting files from
 HTTP streams.
 """
@@ -58,7 +58,7 @@ class AnalysisStats(TypedDict):
     extracted_files: List[ExtractedFileInfo]
 
 
-class PcapAnalyzer:
+class PcapInspector:
     """Analyzer for pcap/pcapng files to find CTF flags and extract files.
 
     This class provides comprehensive analysis of packet captures including:
@@ -73,7 +73,7 @@ class PcapAnalyzer:
         packets: Loaded packet list from the capture file.
 
     Example:
-        >>> analyzer = PcapAnalyzer('capture.pcap', key_file='server.key')
+        >>> analyzer = PcapInspector('capture.pcap', key_file='server.key')
         >>> stats = analyzer.read_stats()
         >>> for flag in stats['flags']:
         ...     print(f"Found: {flag['match']}")

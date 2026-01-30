@@ -1,7 +1,7 @@
-"""Sample pcap file generator for testing pcap-analyzer.
+"""Sample pcap file generator for testing pcap-inspector.
 
 This module provides functions to generate synthetic pcap files with
-known flags for testing the pcap-analyzer package. The generated files
+known flags for testing the pcap-inspector package. The generated files
 contain various scenarios including split flags, out-of-order packets,
 and different encodings.
 """

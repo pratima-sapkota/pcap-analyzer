@@ -1,4 +1,4 @@
-"""Test suite for pcap-analyzer sample file scanning.
+"""Test suite for pcap-inspector sample file scanning.
 
 This module provides tests that scan pcap files in the data directory
 for flags, including both pre-existing samples and dynamically
@@ -9,7 +9,7 @@ import os
 import sys
 from typing import Callable, Dict, List
 
-from pcap_analyzer import PcapAnalyzer
+from pcap_inspector import PcapInspector
 
 # Add tests directory to path to import generate_samples
 sys.path.append(os.path.dirname(__file__))
@@ -83,7 +83,7 @@ def test_scan_all_samples() -> None:
                 print(f"  Using TLS key: {key_file}")
 
             try:
-                analyzer = PcapAnalyzer(filepath, key_file=key_file)
+                analyzer = PcapInspector(filepath, key_file=key_file)
                 stats = analyzer.read_stats()
 
                 # Collect flags from both single packet and reassembled streams

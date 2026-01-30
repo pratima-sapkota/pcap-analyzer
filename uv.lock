@@ -556,7 +556,7 @@ wheels = [
 ]
 
 [[package]]
-name = "pcap-analyzer"
+name = "pcap-inspector"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

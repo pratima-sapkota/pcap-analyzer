@@ -1,6 +1,6 @@
-"""Command-line interface for pcap-analyzer.
+"""Command-line interface for pcap-inspector.
 
-This module provides the main entry point for the pcap-analyzer CLI tool,
+This module provides the main entry point for the pcap-inspector CLI tool,
 which analyzes pcap/pcapng files to find hidden flags commonly used in
 CTF (Capture The Flag) challenges.
 """
@@ -11,11 +11,11 @@ import sys
 import traceback
 from typing import List, Optional
 
-from .pcap_stats import PcapAnalyzer
+from .pcap_stats import PcapInspector
 
 
 def main(args: Optional[List[str]] = None) -> int:
-    """Main entry point for the pcap-analyzer CLI.
+    """Main entry point for the pcap-inspector CLI.
 
     Analyzes a pcap file for flags, extracts files from HTTP streams,
     and displays results to stdout.
@@ -29,12 +29,12 @@ def main(args: Optional[List[str]] = None) -> int:
     Example:
         Command line usage::
 
-            $ pcap-analyzer capture.pcap
-            $ pcap-analyzer capture.pcap -p 'secret\\{.*?\\}'
+            $ pcap-inspector capture.pcap
+            $ pcap-inspector capture.pcap -p 'secret\\{.*?\\}'
     """
     parser = argparse.ArgumentParser(
         description='Analyze pcap files for flags.',
-        prog='pcap-analyzer'
+        prog='pcap-inspector'
     )
     parser.add_argument(
         'pcap_file',
@@ -54,7 +54,7 @@ def main(args: Optional[List[str]] = None) -> int:
 
     print(f"Analyzing {pcap_file}...")
     try:
-        analyzer = PcapAnalyzer(pcap_file)
+        analyzer = PcapInspector(pcap_file)
         stats = analyzer.read_stats()
 
         # Determine patterns used
