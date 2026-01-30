@@ -1,16 +1,53 @@
 #!/usr/bin/env python3
 
-from scapy.all import rdpcap, Raw
+from scapy.all import rdpcap, Raw, sniff, load_layer
 from collections import Counter
 import re
+import os
+import warnings
 from .decode_pkts import decode_base64, decode_rot13, decode_hex
 from .stream_reassembly import StreamAnalyzer
 from .file_extractor import FileExtractor
 
+# Suppress TLSSession deprecation warning
+warnings.filterwarnings("ignore", message="TLSSession is deprecated")
+
+# Load TLS layer for decryption support
+load_layer("tls")
+
 class PcapAnalyzer:
-    def __init__(self, pcap_file):
+    def __init__(self, pcap_file, key_file=None):
         self.pcap_file = pcap_file
-        self.packets = rdpcap(pcap_file)
+        self.key_file = key_file
+        self.packets = self._load_packets()
+
+    def _load_packets(self):
+        """Load packets from pcap file, with optional TLS decryption."""
+        if self.key_file and os.path.exists(self.key_file):
+            try:
+                from scapy.layers.tls.session import TLSSession
+                from scapy.layers.tls.cert import PrivKey
+                import logging
+                
+                # Load the private key for TLS decryption
+                pk = PrivKey(self.key_file)
+                
+                # Suppress the deprecation warning from Scapy's logging
+                scapy_logger = logging.getLogger("scapy")
+                original_level = scapy_logger.level
+                scapy_logger.setLevel(logging.ERROR)
+                try:
+                    # Use sniff with TLSSession to decrypt TLS traffic
+                    packets = sniff(offline=self.pcap_file, session=TLSSession(server_rsa_key=pk))
+                finally:
+                    scapy_logger.setLevel(original_level)
+                return packets
+            except Exception as e:
+                # Fall back to regular rdpcap if TLS decryption fails
+                print(f"Warning: TLS decryption failed ({e}), falling back to standard loading")
+                return rdpcap(self.pcap_file)
+        else:
+            return rdpcap(self.pcap_file)
 
     def search_flags(self, patterns=None):
         if patterns is None:

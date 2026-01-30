@@ -23,6 +23,13 @@ def test_scan_all_samples():
         "sample_pico.pcap": create_pico_pcap
     }
 
+    # ANSI color codes
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    RESET = '\033[0m'
+
     # Generate samples
     print(f"Generating samples in {data_dir}...")
     for filename, creator_func in generated_files.items():
@@ -38,8 +45,16 @@ def test_scan_all_samples():
             filepath = os.path.join(data_dir, f)
             print(f"\nAnalyzing {filepath}...")
             
+            # Check for matching key file (e.g., webnet0.pcap -> webnet0.key)
+            key_file = None
+            base_name = os.path.splitext(f)[0]
+            potential_key = os.path.join(data_dir, f"{base_name}.key")
+            if os.path.exists(potential_key):
+                key_file = potential_key
+                print(f"  Using TLS key: {key_file}")
+            
             try:
-                analyzer = PcapAnalyzer(filepath)
+                analyzer = PcapAnalyzer(filepath, key_file=key_file)
                 stats = analyzer.read_stats()
                 
                 # Collect flags from both single packet and reassembled streams
@@ -52,12 +67,13 @@ def test_scan_all_samples():
                 all_matches = packet_matches + stream_matches
                 
                 if all_matches:
-                    print(f"  [SUCCESS] Found flags: {all_matches}")
+                    flags_str = ", ".join(all_matches)
+                    print(f"  {GREEN}[SUCCESS]{RESET} Found flags: {BOLD}{flags_str}{RESET}")
                 else:
-                    print("  [INFO] No flags found.")
+                    print(f"  {YELLOW}[WARNING]{RESET} No flags found.")
                     
             except Exception as e:
-                print(f"  [ERROR] Failed to analyze {f}: {e}")
+                print(f"  {RED}[ERROR]{RESET} Failed to analyze {f}: {e}")
 
     finally:
         # Clean up generated files
