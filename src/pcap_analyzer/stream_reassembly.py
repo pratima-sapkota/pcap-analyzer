@@ -63,12 +63,22 @@ class StreamAnalyzer:
                 if res: candidates.append(('rot13', res))
             except: pass
             
+
+            
              # Hex
             try:
                 res = decode_hex(stream_payload)
                 if res: candidates.append(('hex', res))
             except: pass
 
+            # Also return the raw stream info for file extraction even if no flag format matches
+            # But the structure is currently list of flag matches.
+            # We should probably return a list of streams metadata + flags.
+            
+            # For backward compatibility with what we planned, let's keep search_flags returning flags.
+            # BUT, we need a way to get streams.
+            # Let's add a separate method or result.
+            
             for enc_name, decoded_val in candidates:
                 for pattern in patterns:
                     matches = re.findall(pattern, decoded_val)
@@ -79,5 +89,36 @@ class StreamAnalyzer:
                             'pattern': pattern,
                             'encoding': enc_name
                         })
-                        
         return results
+
+    def get_reassembled_streams(self):
+        """
+        Returns a dictionary of stream_id -> payload bytes
+        """
+        streams = {}
+        sessions = self.packets.sessions()
+        
+        for session_id, session_pkts in sessions.items():
+            is_tcp = False
+            for pkt in session_pkts:
+                if pkt.haslayer(TCP):
+                    is_tcp = True
+                    break
+            
+            if not is_tcp:
+                continue
+
+            try:
+                sorted_pkts = sorted(session_pkts, key=lambda p: p[TCP].seq if p.haslayer(TCP) else 0)
+            except:
+                sorted_pkts = session_pkts
+            
+            stream_payload = b""
+            for pkt in sorted_pkts:
+                if pkt.haslayer(Raw):
+                    stream_payload += pkt[Raw].load
+            
+            if stream_payload:
+                streams[session_id] = stream_payload
+                
+        return streams

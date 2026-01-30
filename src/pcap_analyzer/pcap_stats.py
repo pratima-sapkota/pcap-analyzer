@@ -5,6 +5,7 @@ from collections import Counter
 import re
 from .decode_pkts import decode_base64, decode_rot13, decode_hex
 from .stream_reassembly import StreamAnalyzer
+from .file_extractor import FileExtractor
 
 class PcapAnalyzer:
     def __init__(self, pcap_file):
@@ -87,5 +88,15 @@ class PcapAnalyzer:
         # Stream Analysis
         stream_analyzer = StreamAnalyzer(self.packets)
         stats['stream_flags'] = stream_analyzer.search_streams()
+        
+        # File Extraction
+        file_extractor = FileExtractor() # uses default 'extracted_files'
+        extracted = []
+        streams = stream_analyzer.get_reassembled_streams()
+        for sid, payload in streams.items():
+            files = file_extractor.extract_from_stream(sid, payload)
+            extracted.extend(files)
+            
+        stats['extracted_files'] = extracted
         
         return stats

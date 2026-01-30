@@ -35,8 +35,14 @@ def main():
             print("\n[+] Possible Flags Found (reassembled streams):")
             for item in stream_flags:
                 print(f"  Stream {item['stream_id']}: {item['match']} (Encoding: {item.get('encoding', 'unknown')})")
+                
+        extracted_files = stats.get('extracted_files', [])
+        if extracted_files:
+            print("\n[+] Extracted Files:")
+            for item in extracted_files:
+                print(f"  {item['filename']} (Size: {item['size']} bytes) -> {item['path']}")
         
-        if not flags and not stream_flags:
+        if not flags and not stream_flags and not extracted_files:
             print("\n[-] No flags found with patterns:", patterns)
             
     except FileNotFoundError:
