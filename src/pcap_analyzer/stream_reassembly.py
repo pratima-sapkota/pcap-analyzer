@@ -8,7 +8,7 @@ class StreamAnalyzer:
 
     def search_streams(self, patterns=None):
         if patterns is None:
-            patterns = [r'flag\{.*?\}', r'CTF\{.*?\}']
+            patterns = [r'flag\{.*?\}', r'CTF\{.*?\}', r'picoCTF\{.*?\}']
             
         results = []
         # Group by sessions (streams)

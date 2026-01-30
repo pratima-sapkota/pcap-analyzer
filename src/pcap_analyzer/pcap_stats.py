@@ -14,7 +14,7 @@ class PcapAnalyzer:
 
     def search_flags(self, patterns=None):
         if patterns is None:
-            patterns = [r'flag\{.*?\}', r'CTF\{.*?\}']
+            patterns = [r'flag\{.*?\}', r'CTF\{.*?\}', r'picoCTF\{.*?\}']
         
         results = []
         for i, pkt in enumerate(self.packets):
