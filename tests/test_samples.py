@@ -38,8 +38,8 @@ def test_scan_all_samples():
 
     try:
         # Scan all pcap files in the directory
-        files = [f for f in os.listdir(data_dir) if f.endswith('.pcap')]
-        print(f"\nScanning {len(files)} pcap files in {data_dir}...")
+        files = [f for f in os.listdir(data_dir) if f.endswith('.pcap') or f.endswith('.pcapng')]
+        print(f"\nScanning {len(files)} pcap/pcapng files in {data_dir}...")
         
         for f in files:
             filepath = os.path.join(data_dir, f)
