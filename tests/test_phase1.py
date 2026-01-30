@@ -1,7 +1,7 @@
 from scapy.all import Ether, IP, TCP, UDP, Raw, wrpcap
 import base64
 import codecs
-from pcap_stats import PcapAnalyzer
+from pcap_analyzer.pcap_stats import PcapAnalyzer
 import os
 
 def create_test_pcap(filename):

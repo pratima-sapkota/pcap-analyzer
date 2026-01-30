@@ -1,7 +1,7 @@
 import sys
 import json
 import argparse
-from pcap_stats import PcapAnalyzer
+from .pcap_stats import PcapAnalyzer
 
 def main():
     parser = argparse.ArgumentParser(description='Analyze pcap files for flags.')

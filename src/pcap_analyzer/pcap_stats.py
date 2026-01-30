@@ -3,7 +3,7 @@
 from scapy.all import rdpcap, Raw
 from collections import Counter
 import re
-from decode_pkts import decode_base64, decode_rot13, decode_hex
+from .decode_pkts import decode_base64, decode_rot13, decode_hex
 
 class PcapAnalyzer:
     def __init__(self, pcap_file):
