@@ -47,6 +47,7 @@ jobs:
         with:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true # Allows re-pushing without failing if version didn't change
+          verbose: true # Enable verbose output for debugging
 
   publish-to-pypi:
     name: Publish to PyPI 🚀
